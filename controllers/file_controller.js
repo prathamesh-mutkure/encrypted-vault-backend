@@ -2,19 +2,47 @@ const fs = require("fs");
 const { handleError, handleSuccess } = require("../utils/handleResponse");
 const GridFile = require("../models/file_model");
 const path = require("path");
+const {
+  encryptBuffer,
+  decryptBuffer,
+} = require("../helpers/encryption-helper");
 
 exports.uploadFile = async (req, res) => {
   try {
     const { file } = req;
 
-    const fileStream = fs.createReadStream(file.path);
+    console.log(file);
+
+    var bitmap = fs.readFileSync(file.path);
+    const buffer = Buffer.from(bitmap);
+    const encrypted = encryptBuffer(buffer);
+
+    const filePath = __dirname + "/../uploads/" + file.originalname;
+
+    fs.createWriteStream(filePath).write(encrypted);
+
+    console.log("OK");
+
+    const fileStream = fs.createReadStream(filePath);
+
+    console.log("OK 2");
 
     const gridFile = new GridFile({ filename: file.originalname });
     await gridFile.upload(fileStream);
 
-    fs.unlinkSync(__dirname + "/../" + file.path);
+    console.log("OK 3");
 
-    return res.json(gridFile);
+    fs.unlinkSync(__dirname + "/../" + file.path);
+    // UnlinkfilePath too
+
+    // return res.json(gridFile);
+    console.log("OK 4");
+
+    console.log(filePath);
+
+    res.sendFile(path.resolve(filePath));
+
+    // res.send("lol");
   } catch (err) {
     console.log(err);
     return handleError(res, "Error saving file to DB", 400);
@@ -27,11 +55,16 @@ exports.downloadFile = async (req, res) => {
 
     const gridFile = await GridFile.findById(id);
 
-    const fileStream = fs.createWriteStream(
-      __dirname + "/../uploads/" + gridFile.filename
-    );
+    const filePath = __dirname + "/../uploads/" + gridFile.filename;
+
+    const fileStream = fs.createWriteStream(filePath);
 
     await gridFile.download(fileStream);
+
+    var bitmap = fs.readFileSync(filePath);
+    const buffer = Buffer.from(bitmap);
+    const decrypted = decryptBuffer(buffer);
+    fs.createWriteStream(filePath).write(decrypted);
 
     if (gridFile) {
       res.sendFile(path.join("uploads", gridFile.filename), {

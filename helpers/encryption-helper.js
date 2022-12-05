@@ -9,7 +9,7 @@ key = crypto
   .digest("base64")
   .substr(0, 32);
 
-export const encryptBuffer = (buffer) => {
+exports.encryptBuffer = (buffer) => {
   const iv = crypto.randomBytes(16);
 
   const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
@@ -19,7 +19,7 @@ export const encryptBuffer = (buffer) => {
   return result;
 };
 
-export const decryptBuffer = (encrypted) => {
+exports.decryptBuffer = (encrypted) => {
   const iv = encrypted.slice(0, 16);
 
   encrypted = encrypted.slice(16);
