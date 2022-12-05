@@ -48,6 +48,8 @@ exports.getAllFiles = async (req, res) => {
   }
 };
 
+// No Need
+
 exports.renameFile = async (req, res) => {
   try {
     const { id } = req.params;
