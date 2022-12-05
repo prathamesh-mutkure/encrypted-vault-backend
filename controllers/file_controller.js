@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { handleError, handleSuccess } = require("../utils/handleResponse");
 const GridFile = require("../models/file_model");
+const path = require("path");
 
 exports.uploadFile = async (req, res) => {
   try {
@@ -26,9 +27,16 @@ exports.downloadFile = async (req, res) => {
 
     const gridFile = await GridFile.findById(id);
 
+    const fileStream = fs.createWriteStream(
+      __dirname + "/../uploads/" + gridFile.filename
+    );
+
+    await gridFile.download(fileStream);
+
     if (gridFile) {
-      res.attachment(gridFile.filename);
-      gridFile.downloadStream(res);
+      res.sendFile(path.join("uploads", gridFile.filename), {
+        root: path.join("."),
+      });
     } else {
       return handleError(res, "File not found", 404);
     }

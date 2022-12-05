@@ -2,3 +2,4 @@ node_modules/
 admin_key.json
 .DS_STORE
 .env
+uploads/
