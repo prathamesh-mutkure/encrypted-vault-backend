@@ -20,10 +20,9 @@ router.post("/file", upload.single("file"), uploadFile);
 
 router.get("/file/:id", downloadFile);
 
+// No Need
 router.get("/files", getAllFiles);
-
 router.patch("/file/:id", renameFile);
-
 router.delete("/file/:id", deleteFile);
 
 module.exports = router;
