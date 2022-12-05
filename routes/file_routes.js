@@ -19,9 +19,9 @@ const upload = multer({ dest: "uploads/" });
 router.post("/file", upload.single("file"), uploadFile);
 
 router.get("/file/:id", downloadFile);
+router.get("/files", getAllFiles);
 
 // No Need
-router.get("/files", getAllFiles);
 router.patch("/file/:id", renameFile);
 router.delete("/file/:id", deleteFile);
 

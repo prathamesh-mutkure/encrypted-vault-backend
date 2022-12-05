@@ -24,17 +24,17 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// mongoose
-//   .connect(DB_URL, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => {
-//     console.log("DB CONNECTED");
-//   })
-//   .catch((err) => {
-//     console.log(`ERR: ${err}`);
-//   });
+mongoose
+  .connect(DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("DB CONNECTED");
+  })
+  .catch((err) => {
+    console.log(`ERR: ${err}`);
+  });
 
 app.use("/api", authRoutes);
 app.use("/api", fileRoutes);
